@@ -9,4 +9,12 @@
         <maven.compiler.release>26</maven.compiler.release>
         <exec.mainClass>com.kunlebakare.github.TaskTrackerCLI</exec.mainClass>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.11.0</version> <!-- Use the latest version -->
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

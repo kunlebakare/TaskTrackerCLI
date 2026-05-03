@@ -9,6 +9,6 @@ package com.kunlebakare.github;
  *
  * @author Kunle Bakare
  */
-public class UserInterface {
+public class Tracker {
 
 }
