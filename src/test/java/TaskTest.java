@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
@@ -56,8 +57,8 @@ public class TaskTest {
     public void newTaskObjectHasCorrectCreatedTime() {
         Task task = new Task("sample");
         LocalTime now = LocalTime.now();
-        assertTrue(now.getHour() == task.getCreatedTime().getHour(), "The time of task creation should be " +now.format(DateTimeFormatter.ofPattern("HH:mm")) +" but is "+ task.getCreatedTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-        assertTrue(now.getMinute() == task.getCreatedTime().getMinute(), "The time of task creation should be " +now.format(DateTimeFormatter.ofPattern("HH:mm")) +" but is "+ task.getCreatedTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+        assertTrue(now.getHour() == task.getCreatedTime().getHour());
+        assertTrue(now.getMinute() == task.getCreatedTime().getMinute());
         
     }
 
@@ -71,28 +72,41 @@ public class TaskTest {
     @Test
     public void changingDescriptionOfTaskChangesUpdatedAtTime() {
         Task task = new Task("go to the market");
-        ChronoLocalDate date = task.getCreatedDate();
-        LocalTime time = task.getCreatedTime();
 
-        task.updateStatus("buy vegetables");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        task.updateDescription("buy vegetables");
+
+        if (task.getCreatedDate().equals(task.getUpdatedDate())){
+            assertFalse(task.getCreatedTime().equals(task.getUpdatedTime()), "Updated time does not reflect time when task description was updated!");
+        } else if (task.getCreatedTime().equals(task.getUpdatedTime())){
+            assertFalse(task.getCreatedDate().equals(task.getUpdatedDate()), "Updated time does not reflect time when task description was updated!");
+        }
     }
 
     @Test
-    public void changingDescriptionOfTaskChangesUpdatedAtTime() {
+    public void changingStatusOfTaskChangesUpdatedAtTime() {
         Task task = new Task("sample");
+        LocalTime oldTime = task.getUpdatedTime();
 
+        try{
+            Thread.sleep(2000);
+        } catch(InterruptedException e){
+            System.out.println(e.getMessage());
+        }
+        task.updateStatus("in-progress");
+        LocalTime newTime = task.getUpdatedTime();
+
+        assertNotEquals(oldTime, newTime, "The time did not update!");
     }
 
     @Test
-    public void changingStatusOfTaskWorks() {
-        Task task = new Task("sample");
-
-    }
-
-    @Test
-    public void changingDescriptionOfTaskWorks() {
-        Task task = new Task("sample");
-
+    public void newTaskHasId(){
+        Task task = new Task("sample", "x23vs");
+        assertEquals("x23vs", task.getId());
     }
 
 }
