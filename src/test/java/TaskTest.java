@@ -5,8 +5,6 @@
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.chrono.ChronoLocalDate;
-import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -105,8 +103,8 @@ public class TaskTest {
 
     @Test
     public void newTaskHasId(){
-        Task task = new Task("sample", "x23vs");
-        assertEquals("x23vs", task.getId());
+        Task task = new Task("sample");
+        assertEquals(1, task.getId());
     }
 
 }
