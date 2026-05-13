@@ -34,6 +34,7 @@ public class FileManager {
     }
 
     public void writeToFile(String jsonLine) {
+        //expects line to be wrapped in {}
         try {
             if (Files.size(filePath) == 0 || Files.readString(filePath).isBlank()) { //if the file is empty
                 Files.writeString(filePath, "{\"Tasks\":[" + jsonLine + "]}");
