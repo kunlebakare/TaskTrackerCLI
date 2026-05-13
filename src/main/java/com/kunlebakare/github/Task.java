@@ -9,6 +9,7 @@ import java.time.LocalTime;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 
+
 /**
  *
  * @author Kunle Bakare
@@ -19,26 +20,36 @@ public class Task {
     private Status taskStatus;
     private ChronoLocalDateTime createdWhen;
     private ChronoLocalDateTime updatedWhen;
-    private String uniqueId;
+    private int uniqueId;
+    private JsonHandler jsonHandler;
 
     public enum Status {
         TODO, INPROGRESS, DONE
     }
 
     public Task(String description) {
+        this.uniqueId = 1;
         this.description = description;
         this.taskStatus = Status.TODO;
         this.createdWhen = LocalDateTime.now();
         this.updatedWhen = this.createdWhen;
     }
 
-    public Task(String description, String id){
-        super();
+    public Task(String description, int id){
+        this(description);
         this.uniqueId = id;
     }
 
-    public String getId(){
+    public int getId(){
         return this.uniqueId;
+    }
+
+    public ChronoLocalDateTime getCreatedWhen(){
+        return this.createdWhen;
+    }
+
+    public ChronoLocalDateTime getUpdatedWhen(){
+        return this.updatedWhen;
     }
 
     public ChronoLocalDate getCreatedDate() {
