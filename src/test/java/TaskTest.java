@@ -4,6 +4,7 @@
  */
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,6 +29,30 @@ public class TaskTest {
     public void creatingATaskObjectWorks() {
         Task task = new Task("sample");
         assertInstanceOf(Task.class, task);
+    }
+
+    @Test
+    public void setCreatedWhenTest(){
+        Task task = new Task();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+        }
+        String createdWhen = LocalDateTime.now().toString();
+        task.setCreatedWhen(createdWhen);
+        assertEquals(createdWhen, task.getCreatedWhen().toString());
+    }
+
+    @Test
+    public void setUpdatedWhenTest(){
+        Task task = new Task();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+        }
+        String updatedWhen = LocalDateTime.now().toString();
+        task.setUpdatedWhen(updatedWhen);
+        assertEquals(updatedWhen, task.getUpdatedWhen().toString());
     }
 
     @Test

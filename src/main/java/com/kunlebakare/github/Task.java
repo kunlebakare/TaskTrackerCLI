@@ -6,9 +6,9 @@ package com.kunlebakare.github;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
-
 
 /**
  *
@@ -35,20 +35,59 @@ public class Task {
         this.updatedWhen = this.createdWhen;
     }
 
-    public Task(String description, int id){
+    public Task(String description, int id) {
         this(description);
         this.uniqueId = id;
     }
 
-    public int getId(){
+    public Task() {
+        this("description");
+    }
+
+    //setters
+    public void setId(int id) {
+        this.uniqueId = id;
+    }
+
+    public void updateDescription(String newDescription) {
+        if (!newDescription.isBlank()) {
+            this.description = newDescription;
+        }
+        this.updatedWhen = LocalDateTime.now();
+    }
+
+    public void updateStatus(String newStatus) {
+        switch (newStatus.toLowerCase()) {
+            case "todo" ->
+                this.taskStatus = Status.TODO;
+            case "in-progress" ->
+                this.taskStatus = Status.INPROGRESS;
+            case "done" ->
+                this.taskStatus = Status.DONE;
+
+        }
+        this.updatedWhen = LocalDateTime.now();
+    }
+
+    public void setCreatedWhen(String createdWhen){
+        this.createdWhen = LocalDateTime.parse(createdWhen);
+    }
+
+    public void setUpdatedWhen(String updatedWhen){
+        this.updatedWhen = LocalDateTime.parse(updatedWhen);
+    }
+
+    //Getters
+
+    public int getId() {
         return this.uniqueId;
     }
 
-    public ChronoLocalDateTime getCreatedWhen(){
+    public ChronoLocalDateTime getCreatedWhen() {
         return this.createdWhen;
     }
 
-    public ChronoLocalDateTime getUpdatedWhen(){
+    public ChronoLocalDateTime getUpdatedWhen() {
         return this.updatedWhen;
     }
 
@@ -74,23 +113,6 @@ public class Task {
 
     public Status getStatus() {
         return this.taskStatus;
-    }
-
-    public void updateDescription(String newDescription) {
-        if (!newDescription.isBlank()) {
-            this.description = newDescription;
-        }
-        this.updatedWhen = LocalDateTime.now();
-    }
-
-    public void updateStatus(String newStatus) {
-        switch(newStatus){
-            case "todo" -> this.taskStatus = Status.TODO;
-            case "in-progress" -> this.taskStatus = Status.INPROGRESS;
-            case "done" -> this.taskStatus = Status.DONE;
-
-        }
-        this.updatedWhen = LocalDateTime.now();
     }
 
 }
