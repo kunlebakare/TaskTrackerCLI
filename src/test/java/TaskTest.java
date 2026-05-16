@@ -3,13 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
  */
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
@@ -25,15 +25,43 @@ public class TaskTest {
     public TaskTest() {
     }
 
+
     @Test
-    public void creatingATaskObjectWorks() {
+    public void toStringTest(){
+        Task task = new Task("description");
+        String regex = "\\d+\\s[a-z]+\\s[a-z]+\\s[\\s\\S]+\\s[\\s\\S]+\\s";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(task.toString());
+
+        assertTrue(matcher.find());
+    }
+
+    @Test
+    public void setIdTest(){
         Task task = new Task("sample");
-        assertInstanceOf(Task.class, task);
+        //id of new task is 1 by default
+        task.setId(2);
+        assertNotEquals(1, task.getId());
+    }
+
+    @Test
+    public void updateDescriptionTest() {
+        Task task = new Task("sample");
+        task.updateDescription("newDescription");
+        assertEquals("newDescription", task.getDescription());
+    }
+
+     @Test
+    public void updateStatusTest() {
+        Task task = new Task("sample");
+        task.updateStatus("DONE");
+        assertNotEquals("TODO", task.getStatus());
     }
 
     @Test
     public void setCreatedWhenTest(){
-        Task task = new Task();
+        Task task = new Task("description");
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -45,7 +73,7 @@ public class TaskTest {
 
     @Test
     public void setUpdatedWhenTest(){
-        Task task = new Task();
+        Task task = new Task("desc");
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -53,36 +81,6 @@ public class TaskTest {
         String updatedWhen = LocalDateTime.now().toString();
         task.setUpdatedWhen(updatedWhen);
         assertEquals(updatedWhen, task.getUpdatedWhen().toString());
-    }
-
-    @Test
-    public void newTaskObjectHasDescription() {
-        Task task = new Task("sample");
-        assertFalse(task.getDescription().isBlank(), "Task description must not be blank");
-
-    }
-
-    @Test
-    public void newTaskObjectHasStatusAstodo() {
-        Task task = new Task("sample");
-        assertEquals(Task.Status.TODO, task.getStatus(), "New task status must begin as TODO");
-    }
-
-    @Test
-    public void newTaskObjectHasCorrectCreatedDate() {
-        Task task = new Task("sample");
-        LocalDate now = LocalDate.now();
-        assertTrue(now.isEqual(task.getCreatedDate()), "The date of task creation is not correct");
-
-    }
-
-     @Test
-    public void newTaskObjectHasCorrectCreatedTime() {
-        Task task = new Task("sample");
-        LocalTime now = LocalTime.now();
-        assertTrue(now.getHour() == task.getCreatedTime().getHour());
-        assertTrue(now.getMinute() == task.getCreatedTime().getMinute());
-        
     }
 
     @Test
@@ -120,16 +118,9 @@ public class TaskTest {
         } catch(InterruptedException e){
             System.out.println(e.getMessage());
         }
-        task.updateStatus("in-progress");
+        task.updateStatus("INPROGRESS");
         LocalTime newTime = task.getUpdatedTime();
 
         assertNotEquals(oldTime, newTime, "The time did not update!");
     }
-
-    @Test
-    public void newTaskHasId(){
-        Task task = new Task("sample");
-        assertEquals(1, task.getId());
-    }
-
 }

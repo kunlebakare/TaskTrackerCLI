@@ -4,11 +4,10 @@
  */
 package com.kunlebakare.github;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Period;
-import java.time.chrono.ChronoLocalDate;
-import java.time.chrono.ChronoLocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -18,10 +17,9 @@ public class Task {
 
     private String description;
     private Status taskStatus;
-    private ChronoLocalDateTime createdWhen;
-    private ChronoLocalDateTime updatedWhen;
+    private LocalDateTime createdWhen;
+    private LocalDateTime updatedWhen;
     private int uniqueId;
-    private JsonHandler jsonHandler;
 
     public enum Status {
         TODO, INPROGRESS, DONE
@@ -40,11 +38,16 @@ public class Task {
         this.uniqueId = id;
     }
 
-    public Task() {
-        this("description");
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String fCreatedWhen = this.createdWhen.format(formatter);
+        String fUpdatedWhen = this.updatedWhen.format(formatter);
+
+        return this.uniqueId+" "+this.description+" "+this.taskStatus.toString().toLowerCase()+" "+fCreatedWhen+" "+fUpdatedWhen;
     }
 
-    //setters
+    //***********************************************setters*************
     public void setId(int id) {
         this.uniqueId = id;
     }
@@ -52,46 +55,48 @@ public class Task {
     public void updateDescription(String newDescription) {
         if (!newDescription.isBlank()) {
             this.description = newDescription;
+            this.updatedWhen = LocalDateTime.now();
         }
-        this.updatedWhen = LocalDateTime.now();
     }
 
     public void updateStatus(String newStatus) {
-        switch (newStatus.toLowerCase()) {
-            case "todo" ->
+        if (this.getStatus().equals(newStatus)) {
+            return;
+        }
+        switch (newStatus) {
+            case "TODO" ->
                 this.taskStatus = Status.TODO;
-            case "in-progress" ->
+            case "INPROGRESS" ->
                 this.taskStatus = Status.INPROGRESS;
-            case "done" ->
+            case "DONE" ->
                 this.taskStatus = Status.DONE;
 
         }
         this.updatedWhen = LocalDateTime.now();
     }
 
-    public void setCreatedWhen(String createdWhen){
-        this.createdWhen = LocalDateTime.parse(createdWhen);
+    public void setCreatedWhen(String newcreatedWhen) {
+        this.createdWhen = LocalDateTime.parse(newcreatedWhen);
     }
 
-    public void setUpdatedWhen(String updatedWhen){
-        this.updatedWhen = LocalDateTime.parse(updatedWhen);
+    public void setUpdatedWhen(String newupdatedWhen) {
+        this.updatedWhen = LocalDateTime.parse(newupdatedWhen);
     }
 
-    //Getters
-
+    //*********************************GETTERS******************** */
     public int getId() {
         return this.uniqueId;
     }
 
-    public ChronoLocalDateTime getCreatedWhen() {
+    public LocalDateTime getCreatedWhen() {
         return this.createdWhen;
     }
 
-    public ChronoLocalDateTime getUpdatedWhen() {
+    public LocalDateTime getUpdatedWhen() {
         return this.updatedWhen;
     }
 
-    public ChronoLocalDate getCreatedDate() {
+    public LocalDate getCreatedDate() {
         return createdWhen.toLocalDate();
     }
 
@@ -99,7 +104,7 @@ public class Task {
         return createdWhen.toLocalTime();
     }
 
-    public ChronoLocalDate getUpdatedDate() {
+    public LocalDate getUpdatedDate() {
         return updatedWhen.toLocalDate();
     }
 
@@ -111,8 +116,8 @@ public class Task {
         return this.description;
     }
 
-    public Status getStatus() {
-        return this.taskStatus;
+    public String getStatus() {
+        return this.taskStatus.toString();
     }
 
 }
