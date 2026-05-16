@@ -29,7 +29,7 @@ public class TaskTest {
     @Test
     public void toStringTest(){
         Task task = new Task("description");
-        String regex = "\\d+\\s[a-z]+\\s[a-z]+\\s[\\s\\S]+\\s[\\s\\S]+\\s";
+        String regex = "\\d+\\s[a-z]+\\s[a-z]+\\s[\\s\\S]+\\s[\\s\\S]+";
 
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(task.toString());
