@@ -4,6 +4,8 @@
  */
 package com.kunlebakare.github;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +15,7 @@ public class JsonHandler {
 
     }
 
-    public String convertTaskToJson(Task task) {
+    public static String convertTaskToJson(Task task) {
         StringBuilder sb = new StringBuilder("{");
         sb.append("\"id\":").append(task.getId()).append(",");
         sb.append("\"description\":").append("\"").append(task.getDescription()).append("\"").append(",");
@@ -24,12 +26,12 @@ public class JsonHandler {
         return sb.toString();
     }
 
-    public Task convertJsonToTask(String json) {
+    public static Task convertJsonToTask(String json) {
         //"id":1,"description":"Website Redesign","status":"todo","createdAt":"timehere","updatedAt":"timehere"
         String regex = "\"([^\"]+)\":(\"[^\"]+\"|\\d+)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(json);
-        Task task = new Task();
+        Task task = new Task("description");
 
         while (matcher.find()) {
             String key = matcher.group(1);
@@ -54,6 +56,24 @@ public class JsonHandler {
 
         }
         return task;
+    }
+
+    public static List<Task> convertAllToTask(List<String> allLines) {
+        List<Task> newList = new ArrayList<>();
+        allLines.stream()
+                .forEach(line
+                        -> newList.add(convertJsonToTask(line))
+                );
+        return newList;
+    }
+
+    public static List<String> convertAlltoJson(List<Task> allTasks){
+        List<String> newList = new ArrayList<>();
+        allTasks.stream()
+                .forEach(task
+                        -> newList.add(convertTaskToJson(task))
+                );
+        return newList;
     }
 
 }
