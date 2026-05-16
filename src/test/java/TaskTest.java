@@ -55,7 +55,7 @@ public class TaskTest {
      @Test
     public void updateStatusTest() {
         Task task = new Task("sample");
-        task.updateStatus("DONE");
+        task.updateStatus("done");
         assertNotEquals("TODO", task.getStatus());
     }
 

@@ -117,7 +117,10 @@ public class Task {
     }
 
     public String getStatus() {
-        return this.taskStatus.toString();
+        if (this.taskStatus == Status.INPROGRESS){
+            return "in-progress";
+        }
+        return this.taskStatus.toString().toLowerCase();
     }
 
 }
