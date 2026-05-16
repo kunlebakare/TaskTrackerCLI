@@ -44,7 +44,7 @@ public class Task {
         String fCreatedWhen = this.createdWhen.format(formatter);
         String fUpdatedWhen = this.updatedWhen.format(formatter);
 
-        return this.uniqueId+" "+this.description+" "+this.taskStatus.toString().toLowerCase()+" "+fCreatedWhen+" "+fUpdatedWhen;
+        return this.uniqueId+" "+this.description+" "+getStatus()+" "+fCreatedWhen+" "+fUpdatedWhen;
     }
 
     //***********************************************setters*************
