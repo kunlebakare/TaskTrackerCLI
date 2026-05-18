@@ -21,7 +21,7 @@ import java.util.List;
 public class FileManager {
 
     //handles the json file including creating, reading, writing
-    private Path filePath = Path.of("tasks.json");
+    private static Path filePath = Path.of("tasks.json");
 
     public FileManager() {
         try {
@@ -29,12 +29,13 @@ public class FileManager {
         } catch (FileAlreadyExistsException e) {
             e.getStackTrace();
         } catch (IOException e) {
-            e.getStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
-    public void writeToFile(String jsonLine) {
+    public static void writeToFile(String jsonLine) {
         //expects line to be wrapped in {}
+        //expects the file to already exist
         try {
             if (Files.size(filePath) == 0 || Files.readString(filePath).isBlank()) { //if the file is empty
                 Files.writeString(filePath, "{\"Tasks\":[" + jsonLine + "]}");
@@ -46,26 +47,50 @@ public class FileManager {
             }
 
         } catch (NoSuchFileException e) {
-            e.getStackTrace();
+            System.out.println(e.toString());
         } catch (IOException e) {
-            e.getStackTrace();
+            System.out.println(e.toString());
         }
     }
 
-    public void writeAllToFile(List<String> lines) {
+    public static void writeAllToFile(List<String> lines) {
         lines.stream()
                 .forEach(line -> writeToFile(line));
     }
 
-    public List<String> readAllFromFile() {
+    public static List<String> readAllFromFile() {
         try {
             String lines = Files.readString(filePath);
-            String newLines = lines.substring(11, lines.length()-3);
+            String newLines = lines.substring(11, lines.length() - 3);
             String[] tasks = newLines.split("\\},\\{");
-            
+            //Files.delete(filePath);
             return Arrays.asList(tasks);
+        } catch (NoSuchFileException e) {
+            System.out.println(e.getMessage());
         } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
         return new ArrayList<>();
+    }
+
+    public static boolean fileIsEmpty() {
+        try {
+            if (Files.readString(filePath).isBlank()) {
+                return true;
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return false;
+    }
+
+    public static List<Task> readAllAsTask() {
+        return JsonHandler.convertAllToTask(readAllFromFile());
+    }
+
+    public static void writeAllTasksToFile(List<Task> allTasks) {
+
+        writeAllToFile(JsonHandler.convertAlltoJson(allTasks));
     }
 }
