@@ -33,6 +33,15 @@ public class FileManager {
         }
     }
 
+    public static void reinitializeFile() {
+        try {
+            Files.deleteIfExists(filePath);
+            Files.createFile(filePath);
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
+    }
+
     public static void writeToFile(String jsonLine) {
         //expects line to be wrapped in {}
         //expects the file to already exist
@@ -63,7 +72,6 @@ public class FileManager {
             String lines = Files.readString(filePath);
             String newLines = lines.substring(11, lines.length() - 3);
             String[] tasks = newLines.split("\\},\\{");
-            //Files.delete(filePath);
             return Arrays.asList(tasks);
         } catch (NoSuchFileException e) {
             System.out.println(e.getMessage());
