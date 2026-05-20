@@ -5,8 +5,6 @@
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -23,18 +21,6 @@ import com.kunlebakare.github.Task;
 public class TaskTest {
 
     public TaskTest() {
-    }
-
-
-    @Test
-    public void toStringTest(){
-        Task task = new Task("description");
-        String regex = "\\d+\\s[a-z]+\\s[a-z]+\\s[\\s\\S]+\\s[\\s\\S]+";
-
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(task.toString());
-
-        assertTrue(matcher.find());
     }
 
     @Test

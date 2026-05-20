@@ -40,11 +40,11 @@ public class Task {
 
     @Override
     public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
         String fCreatedWhen = this.createdWhen.format(formatter);
         String fUpdatedWhen = this.updatedWhen.format(formatter);
 
-        return this.uniqueId+" "+this.description+" "+getStatus()+" "+fCreatedWhen+" "+fUpdatedWhen;
+        return String.format("%-5d %-25.25s %-15s %-22s %-22s", this.uniqueId, this.description, getStatus(), fCreatedWhen, fUpdatedWhen);
     }
 
     //***********************************************setters*************
@@ -60,17 +60,16 @@ public class Task {
     }
 
     public void updateStatus(String newStatus) {
-        if (this.getStatus().equals(newStatus)) {
+        if (this.getStatus().equals(newStatus.toLowerCase())) {
             return;
         }
-        switch (newStatus) {
-            case "TODO" ->
+        switch (newStatus.toLowerCase()) {
+            case "todo" ->
                 this.taskStatus = Status.TODO;
-            case "INPROGRESS" ->
+            case "in-progress" ->
                 this.taskStatus = Status.INPROGRESS;
-            case "DONE" ->
+            case "done" ->
                 this.taskStatus = Status.DONE;
-
         }
         this.updatedWhen = LocalDateTime.now();
     }

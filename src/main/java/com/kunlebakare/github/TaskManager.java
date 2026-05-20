@@ -9,11 +9,20 @@ package com.kunlebakare.github;
  * @author Kunle Bakare
  */
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TaskManager {
     //connects everything together
 
     public TaskManager() {
+    }
+
+    public static boolean idisInvalid(String id, int tasksSize) {
+        return id.isBlank() || Integer.parseInt(id) > tasksSize;
+    }
+
+    public static boolean descIsInvalid(String description) {
+        return description.isBlank();
     }
 
     public static void reorganizeTasks() {
@@ -36,55 +45,103 @@ public class TaskManager {
     }
 
     public static void addNewTask(String description) {
+        if (descIsInvalid(description)) {
+            System.out.println("You did not give a description for your task");
+            return;
+        }
         Task task = new Task(description, uniqueIdGenerator());
         String taskJson = JsonHandler.convertTaskToJson(task);
         FileManager.writeToFile(taskJson);
+        System.out.println("Task added successfully (ID: " + task.getId() + ")");
     }
 
-    public static void updateTask(int id, String description) {
+    public static void updateTask(String id, String description) {
         List<Task> tasks = FileManager.readAllAsTask();
-        tasks.get(id-1).updateDescription(description);
+        if (idisInvalid(id, tasks.size())) {
+            System.out.println("Invalid id");
+            return;
+        }
+        int nid = Integer.parseInt(id);
+        if (descIsInvalid(id)) {
+            System.out.println("You did not give any description");
+            return;
+        }
+
+        tasks.get(nid - 1).updateDescription(description);
+        System.out.println("Task updated successfully");
         FileManager.reinitializeFile();
         FileManager.writeAllTasksToFile(tasks);
     }
 
-    public static void updateToInProgress(int id) {
+    public static void updateToInProgress(String id) {
         List<Task> tasks = FileManager.readAllAsTask();
-        tasks.get(id-1).updateStatus("INPROGRESS");
+        if (idisInvalid(id, tasks.size())) {
+            System.out.println("Invalid id");
+            return;
+        }
+        int nid = Integer.parseInt(id);
+        tasks.get(nid - 1).updateStatus("in-progress");
         FileManager.reinitializeFile();
         FileManager.writeAllTasksToFile(tasks);
     }
 
-    public static void updateToDone(int id) {
+    public static void updateToDone(String id) {
         List<Task> tasks = FileManager.readAllAsTask();
-        tasks.get(id-1).updateStatus("DONE");
+        if (idisInvalid(id, tasks.size())) {
+            System.out.println("Invalid id");
+            return;
+        }
+        int nid = Integer.parseInt(id);
+        tasks.get(nid - 1).updateStatus("done");
         FileManager.reinitializeFile();
         FileManager.writeAllTasksToFile(tasks);
     }
 
-    public static void deleteTask(int id) {
+    public static void deleteTask(String id) {
         List<Task> tasks = FileManager.readAllAsTask();
-        tasks.remove(id-1);
+        if (idisInvalid(id, tasks.size())) {
+            System.out.println("Invalid id");
+            return;
+        }
+        int nid = Integer.parseInt(id);
+        tasks.remove(nid - 1);
+        System.out.println("Task deleted successfully");
         FileManager.reinitializeFile();
         FileManager.writeAllTasksToFile(tasks);
-        reorganizeTasks();
+        if (!FileManager.fileIsEmpty()) {
+            reorganizeTasks();
+        }
+
     }
 
     public static void listAllTasks() {
-        FileManager.readAllAsTask().stream()
-                .forEach(System.out::println);
+        if (!FileManager.fileIsEmpty()) {
+            String format = "%-5s %-25s %-15s %-22s %-22s%n";
+            System.out.printf(format, "ID", "DESCRIPTION", "STATUS", "CREATED AT", "UPDATED AT");
+            FileManager.readAllAsTask().stream()
+                    .forEach(System.out::println);
+        } else {
+            System.out.println("There are no tasks");
+        }
+
     }
 
     public static void listAllDoneTasks() {
-        FileManager.readAllAsTask().stream()
-                .forEach(task -> {
-                    if (task.getStatus().equals("done")) {
-                        System.out.println(task);
-                    }
-                });
+        List<Task> doneTasks = FileManager.readAllAsTask().stream()
+                .filter(task -> task.getStatus().equals("done"))
+                .collect(Collectors.toList());
+        if (doneTasks.isEmpty()) {
+            System.out.println("There are no done tasks");
+        } else {
+            String format = "%-5s %-25s %-15s %-22s %-22s%n";
+            System.out.printf(format, "ID", "DESCRIPTION", "STATUS", "CREATED AT", "UPDATED AT");
+            doneTasks.forEach(System.out::println);
+        }
     }
 
     public static void listAllTasksNotDone() {
+        String format = "%-5s %-25s %-15s %-22s %-22s%n";
+        System.out.printf(format, "ID", "DESCRIPTION", "STATUS", "CREATED AT", "UPDATED AT");
         FileManager.readAllAsTask().stream()
                 .forEach(task -> {
                     if (!task.getStatus().equals("done")) {
@@ -94,21 +151,30 @@ public class TaskManager {
     }
 
     public static void listAllTasksInProgress() {
-        FileManager.readAllAsTask().stream()
-                .forEach(task -> {
-                    if (task.getStatus().equals("in-progress")) {
-                        System.out.println(task);
-                    }
-                });
+        List<Task> inTasks = FileManager.readAllAsTask().stream()
+                .filter(task -> task.getStatus().equals("in-progress"))
+                .collect(Collectors.toList());
+        if (inTasks.isEmpty()) {
+            System.out.println("There are no in-progress tasks");
+        } else {
+            String format = "%-5s %-25s %-15s %-22s %-22s%n";
+            System.out.printf(format, "ID", "DESCRIPTION", "STATUS", "CREATED AT", "UPDATED AT");
+            inTasks.forEach(System.out::println);
+        }
+
     }
 
     public static void listAllTodoTasks() {
-        FileManager.readAllAsTask().stream()
-                .forEach(task -> {
-                    if (task.getStatus().equals("todo")) {
-                        System.out.println(task);
-                    }
-                });
+        List<Task> todoTasks = FileManager.readAllAsTask().stream()
+                .filter(task -> task.getStatus().equals("todo"))
+                .collect(Collectors.toList());
+        if (todoTasks.isEmpty()) {
+            System.out.println("There are no todo tasks");
+        } else {
+            String format = "%-5s %-25s %-15s %-22s %-22s%n";
+            System.out.printf(format, "ID", "DESCRIPTION", "STATUS", "CREATED AT", "UPDATED AT");
+            todoTasks.forEach(System.out::println);
+        }
     }
 
 }

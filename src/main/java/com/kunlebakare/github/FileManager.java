@@ -74,9 +74,9 @@ public class FileManager {
             String[] tasks = newLines.split("\\},\\{");
             return Arrays.asList(tasks);
         } catch (NoSuchFileException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.toString());
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.toString());
         }
         return new ArrayList<>();
     }
@@ -87,7 +87,7 @@ public class FileManager {
                 return true;
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.toString());
         }
 
         return false;

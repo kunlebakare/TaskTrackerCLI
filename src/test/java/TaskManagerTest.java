@@ -175,7 +175,7 @@ public class TaskManagerTest {
     @Test
     public void updateTaskTest() {
         TaskManager.addNewTask("going to the market");
-        TaskManager.updateTask(1, "buy ice cream");
+        TaskManager.updateTask("1", "buy ice cream");
 
         try {
             String line = Files.readString(filePath);
@@ -201,7 +201,7 @@ public class TaskManagerTest {
     @Test
     public void updateToInProgressTest() {
         TaskManager.addNewTask("going to the market");
-        TaskManager.updateToInProgress(1);
+        TaskManager.updateToInProgress("1");
 
         try {
             String line = Files.readString(filePath);
@@ -226,7 +226,7 @@ public class TaskManagerTest {
     @Test
     public void updateToDoneTest() {
         TaskManager.addNewTask("going to the market");
-        TaskManager.updateToDone(1);
+        TaskManager.updateToDone("1");
 
         try {
             String line = Files.readString(filePath);
@@ -263,7 +263,7 @@ public class TaskManagerTest {
 
         FileManager.writeAllToFile(tasks);
 
-        TaskManager.deleteTask(2);
+        TaskManager.deleteTask("2");
 
         try {
             String line = Files.readString(filePath).substring(11);
