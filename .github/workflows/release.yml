@@ -26,7 +26,7 @@ jobs:
       - name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '21'      # Using Java 21 LTS
+          java-version: '26'      # Using Java 26
           distribution: 'graalvm' # Specifies we want the native-image compiler
           github-token: ${{ secrets.GITHUB_TOKEN }}
           cache: 'maven'
