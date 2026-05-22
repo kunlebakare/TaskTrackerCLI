@@ -6,7 +6,7 @@ on:
   release:
     types: [published]
   workflow_dispatch:
-    
+
 # Grant the workflow permission to upload assets
 permissions:
   contents: write
@@ -50,7 +50,7 @@ jobs:
       # Exact same command, but we name the output 'task-cli.exe' for Windows
       - name: Build Windows Native Image
         if: matrix.os == 'windows-latest'
-        run: native-image -cp target/classes com.kunlebakare.github.TaskTrackerCLI task-cli.exe
+        run: native-image -cp target/classes com.kunlebakare.github.TaskTrackerCLI task-cli
 
       # Step 5a: Attach the compiled Linux binary to the GitHub Release page
       - name: Upload Linux Release Asset
