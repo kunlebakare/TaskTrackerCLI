@@ -7,8 +7,11 @@ _Created as part of a learning project for the Java roadmap on [Roadmap.sh](http
 
  
   # HOW TO USE
+  Download the relevant executable for windows(task-cli.exe) or linux(task-cli)
   In your favourite command line app, type `task-cli` in combination with any of `add` `update` `delete` to add, update, or delete a task respectively.
-  e.g. `task-cli add "go to the gym by 5"`
+  e.g. open windows terminal in the folder where task-cli.exe lives, then do `./task-cli add "do something later"`
+  
+  `task-cli add "go to the gym by 5"`
   
   Do `task-cli list` to list all tasks and their respective task-id
 
