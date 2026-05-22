@@ -1,0 +1,63 @@
+name: Build Native Executables
+
+# This workflow triggers whenever you publish a new release on GitHub
+# 'workflow_dispatch' also allows you to run it manually from the Actions tab
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build-native:
+    name: Build on ${{ matrix.os }}
+    # This matrix tells GitHub to run this entire job twice simultaneously:
+    # Once on a Linux machine, and once on a Windows machine.
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      # Step 1: Download your code onto the runner
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Install GraalVM (A special version of Java that compiles to native OS binaries)
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'      # Using Java 21 LTS
+          distribution: 'graalvm' # Specifies we want the native-image compiler
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          cache: 'maven'
+
+      # Step 3: Compile your .java files into .class files using standard Maven
+      - name: Compile Java Classes
+        run: mvn clean compile
+
+      # Step 4a: Build the Linux executable
+      # We pass the target/classes folder to GraalVM, point it to your main class, 
+      # and tell it to output a binary named 'task-cli'
+      - name: Build Linux Native Image
+        if: matrix.os == 'ubuntu-latest'
+        run: native-image -cp target/classes com.kunlebakare.github.TaskTrackerCLI task-cli
+
+      # Step 4b: Build the Windows executable
+      # Exact same command, but we name the output 'task-cli.exe' for Windows
+      - name: Build Windows Native Image
+        if: matrix.os == 'windows-latest'
+        run: native-image -cp target/classes com.kunlebakare.github.TaskTrackerCLI task-cli.exe
+
+      # Step 5a: Attach the compiled Linux binary to the GitHub Release page
+      - name: Upload Linux Release Asset
+        if: matrix.os == 'ubuntu-latest'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: task-cli
+
+      # Step 5b: Attach the compiled Windows binary to the GitHub Release page
+      - name: Upload Windows Release Asset
+        if: matrix.os == 'windows-latest'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: task-cli.exe
