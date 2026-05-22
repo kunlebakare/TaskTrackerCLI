@@ -6,6 +6,10 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    
+# Grant the workflow permission to upload assets
+permissions:
+  contents: write
 
 jobs:
   build-native:
